@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pendaftaran Jalur INDEN - MI DA'WATUL KHOIR</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Library untuk QR Code & Download Gambar -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
             --primary: #0d9488;
@@ -65,7 +68,7 @@
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
         }
-        .submit-btn {
+        .submit-btn, .download-btn {
             background-color: var(--primary);
             color: white;
             border: none;
@@ -80,19 +83,55 @@
             align-items: center;
             justify-content: center;
             gap: 10px;
+            text-decoration: none;
         }
-        .submit-btn:hover {
+        .submit-btn:hover, .download-btn:hover {
             background-color: var(--primary-dark);
         }
-        .alert-success {
+        
+        /* Style Kartu Bukti Pendaftaran */
+        #successSection {
             display: none;
-            background-color: #d1fae5;
-            color: #065f46;
-            padding: 15px;
-            border-radius: 8px;
             text-align: center;
+        }
+        .card-bukti {
+            background: #ffffff;
+            border: 2px dashed var(--primary);
+            padding: 25px;
+            border-radius: 12px;
             margin-bottom: 20px;
+            text-align: left;
+            position: relative;
+        }
+        .card-bukti h3 {
+            color: var(--primary);
+            text-align: center;
+            margin-top: 0;
+            border-bottom: 2px solid #f0fdf4;
+            padding-bottom: 10px;
+        }
+        .card-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .card-label {
             font-weight: 600;
+            color: #4b5563;
+        }
+        .qr-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .info-teks {
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -102,10 +141,7 @@
     <h2>MI DA'WATUL KHOIR</h2>
     <div class="subtitle">Formulir Pendaftaran Jalur INDEN TP 2027/2028</div>
 
-    <div id="alertSuccess" class="alert-success">
-        <i class="fa-solid fa-circle-check"></i> Pendaftaran Berhasil! Data Anda sudah masuk ke sistem kami.
-    </div>
-
+    <!-- FORMULIR PENDAFTARAN -->
     <form id="indenForm">
         <div class="form-group">
             <label>Nama Lengkap Siswa <span>*</span></label>
@@ -145,15 +181,65 @@
             <i class="fa-solid fa-paper-plane"></i> Kirim Pendaftaran
         </button>
     </form>
+
+    <!-- SECTION KARTU BUKTI (MUNCUL SETELAH SUBMIT) -->
+    <div id="successSection">
+        <div style="background: #d1fae5; color: #065f46; padding: 12px; border-radius: 8px; margin-bottom: 20px; font-weight: 600;">
+            <i class="fa-solid fa-circle-check"></i> Pendaftaran Berhasil & Data Tersimpan!
+        </div>
+
+        <!-- Bagian kartu yang akan didownload jadi gambar -->
+        <div id="captureCard" class="card-bukti">
+            <h3>BUKTI PENDAFTARAN INDEN</h3>
+            <div class="card-row">
+                <span class="card-label">Status:</span>
+                <span style="color: #0d9488; font-weight: bold;">BERHASIL TERDAFTAR</span>
+            </div>
+            <div class="card-row">
+                <span class="card-label">Nama Siswa:</span>
+                <span id="resNama">-</span>
+            </div>
+            <div class="card-row">
+                <span class="card-label">Jenis Kelamin:</span>
+                <span id="resGender">-</span>
+            </div>
+            <div class="card-row">
+                <span class="card-label">TTL:</span>
+                <span id="resTtl">-</span>
+            </div>
+            <div class="card-row">
+                <span class="card-label">Nama Wali:</span>
+                <span id="resWali">-</span>
+            </div>
+            <div class="card-row">
+                <span class="card-label">No WhatsApp:</span>
+                <span id="resWa">-</span>
+            </div>
+
+            <div class="qr-container">
+                <div id="qrcode"></div>
+            </div>
+            <div class="info-teks">Scan QR Code untuk verifikasi status pendaftaran Inden MI Da'watul Khoir</div>
+        </div>
+
+        <button type="button" class="download-btn" id="downloadBtn">
+            <i class="fa-solid fa-download"></i> Download Bukti Pendaftaran (Gambar)
+        </button>
+        
+        <br>
+        <button type="button" style="background: transparent; border: none; color: #0d9488; cursor: pointer; font-weight: 600; margin-top: 10px;" onclick="location.reload();">
+            <i class="fa-solid fa-rotate-left"></i> Input Pendaftaran Lainnya
+        </button>
+    </div>
 </div>
 
 <script>
-    // GANTI URL DI BAWAH INI DENGAN URL WEB APP GOOGLE APPS SCRIPT ANDA
+    // URL Web App Google Spreadsheet Anda yang sudah aktif
     const scriptURL = 'https://script.google.com/macros/s/AKfycbzjMgSqdlcVnm7QpK3BlRosxGWvmW47svs2vYMROQ4E58Ej_PR2nMctBQIznpVZQWY/exec';
 
     const form = document.getElementById('indenForm');
     const submitBtn = document.getElementById('submitBtn');
-    const alertSuccess = document.getElementById('alertSuccess');
+    const successSection = document.getElementById('successSection');
 
     form.addEventListener('submit', e => {
         e.preventDefault();
@@ -169,6 +255,7 @@
             wa: document.getElementById('wa').value
         };
 
+        // Kirim data ke Google Spreadsheet
         fetch(scriptURL, {
             method: 'POST',
             mode: 'no-cors',
@@ -176,16 +263,43 @@
             body: JSON.stringify(formData)
         })
         .then(() => {
-            alertSuccess.style.display = 'block';
-            form.reset();
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Pendaftaran';
+            // Sembunyikan form, tampilkan kartu bukti
+            form.style.display = 'none';
+            successSection.style.display = 'block';
+
+            // Masukkan data ke kartu bukti
+            document.getElementById('resNama').innerText = formData.nama;
+            document.getElementById('resGender').innerText = formData.gender;
+            document.getElementById('resTtl').innerText = formData.tempatLahir + ', ' + formData.tanggalLahir;
+            document.getElementById('resWali').innerText = formData.namaWali;
+            document.getElementById('resWa').innerText = formData.wa;
+
+            // Generate Barcode / QR Code (Isi QR mengarah ke data pendaftar / link status)
+            document.getElementById('qrcode').innerHTML = ""; // Bersihkan QR lama jika ada
+            const qrText = `Siswa: ${formData.nama} | Wali: ${formData.namaWali} | Status: TERDAFTAR INDEN TP 2027/2028`;
+            new QRCode(document.getElementById("qrcode"), {
+                text: qrText,
+                width: 110,
+                height: 110
+            });
+
             window.scrollTo({ top: 0, behavior: 'smooth' });
         })
         .catch(error => {
             alert('Terjadi kesalahan, silakan coba lagi.');
             submitBtn.disabled = false;
             submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Kirim Pendaftaran';
+        });
+    });
+
+    // Fitur Download Kartu Menjadi Gambar (PNG)
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+        const card = document.getElementById('captureCard');
+        html2canvas(card, { scale: 2 }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = 'Bukti-Inden-PPDB.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
         });
     });
 </script>
