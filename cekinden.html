@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Status Inden yang Sudah Masuk - MI Da'watul Khoir</title>
+    <title>Status Kuota & Pendaftar Inden - MI Da'watul Khoir</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -20,7 +20,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             background: #ffffff;
             padding: 25px;
@@ -36,8 +36,39 @@
             margin-bottom: 25px;
         }
         .header-banner h1 {
-            margin: 0 0 10px 0;
+            margin: 0 0 8px 0;
             font-size: 20px;
+        }
+        /* Widget Kuota */
+        .quota-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .quota-info h3 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            color: var(--primary);
+        }
+        .quota-info p {
+            margin: 0;
+            font-size: 13px;
+            color: #64748b;
+        }
+        .quota-badge {
+            background: #0d9488;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
         }
         .info-bar {
             display: flex;
@@ -51,7 +82,7 @@
             padding: 10px 15px;
             border: 1px solid #d1d5db;
             border-radius: 8px;
-            width: 300px;
+            width: 250px;
             font-size: 14px;
         }
         .table-responsive {
@@ -60,12 +91,11 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 13px;
+            font-size: 14px;
             text-align: left;
-            white-space: nowrap;
         }
         th, td {
-            padding: 12px 14px;
+            padding: 14px 16px;
             border-bottom: 1px solid #e5e7eb;
         }
         th {
@@ -79,10 +109,13 @@
         .badge {
             background-color: #d1fae5;
             color: #065f46;
-            padding: 4px 10px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
         .back-btn {
             display: inline-flex;
@@ -94,6 +127,13 @@
             margin-bottom: 15px;
             font-size: 14px;
         }
+        .privacy-note {
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+            margin-top: 20px;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -102,52 +142,54 @@
     <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda</a>
 
     <div class="header-banner">
-        <h1>Status Calon Siswa Baru Jalur Inden</h1>
+        <h1>Status & Kuota Calon Siswa Jalur Inden</h1>
         <p style="margin: 0; font-size: 14px; opacity: 0.9;">MI Da'watul Khoir TP. 2027/2028</p>
+    </div>
+
+    <!-- Kotak Informasi Kuota Maksimal 25 Anak -->
+    <div class="quota-box">
+        <div class="quota-info">
+            <h3>Kapasitas Kuota Jalur Inden</h3>
+            <p>Pendaftaran akan ditutup otomatis jika kuota terpenuhi.</p>
+        </div>
+        <div class="quota-badge" id="quotaText">Terisi: 0 / 25 Anak</div>
     </div>
 
     <div class="info-bar">
         <div id="totalData" style="font-weight: 600; color: #4b5563;">Memuat data...</div>
-        <input type="text" id="searchInput" class="search-box" placeholder="Cari nama siswa, ayah, atau ibu..." onkeyup="filterTable()">
+        <input type="text" id="searchInput" class="search-box" placeholder="Cari nama siswa..." onkeyup="filterTable()">
     </div>
 
     <div class="table-responsive">
         <table>
             <thead>
                 <tr>
-                    <th>NO</th>
-                    <th>WAKTU DAFTAR</th>
-                    <th>NAMA SISWA</th>
-                    <th>L/P</th>
-                    <th>TTL</th>
-                    <th>NIK SISWA</th>
-                    <th>ASAL SEKOLAH</th>
-                    <th>NO WA</th>
-                    <th>NO KK</th>
-                    <th>NAMA AYAH</th>
-                    <th>NIK AYAH</th>
-                    <th>NAMA IBU</th>
-                    <th>NIK IBU</th>
-                    <th>NAMA WALI</th>
-                    <th>STATUS</th>
+                    <th style="width: 10%;">NO</th>
+                    <th style="width: 25%;">WAKTU DAFTAR</th>
+                    <th style="width: 45%;">NAMA CALON SISWA</th>
+                    <th style="width: 20%; text-align: center;">STATUS</th>
                 </tr>
             </thead>
             <tbody id="dataTableBody">
                 <tr>
-                    <td colspan="15" style="text-align: center; padding: 40px; color: #6b7280;">
-                        <i class="fa-solid fa-spinner fa-spin"></i> Sedang memuat data dari database...
+                    <td colspan="4" style="text-align: center; padding: 40px; color: #6b7280;">
+                        <i class="fa-solid fa-spinner fa-spin"></i> Sedang memuat data...
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
+
+    <div class="privacy-note">
+        <i class="fa-solid fa-shield-halved"></i> Demi keamanan & privasi, data sensitif (NIK, KK, & Alamat) dirahasiakan dan hanya diakses oleh panitia madrasah.
+    </div>
 </div>
 
 <script>
-    // URL Web App Google Apps Script Anda (pastikan sama)
     const scriptURL = 'https://script.google.com/macros/s/AKfycbwuKlypGoI7-ZGdrPApWDwR8MLwMGtZ54aLjtZgQ4Q9NIYNfjTGLV_7sv9aGjUZWpzS/exec';
 
     let allData = [];
+    const MAX_QUOTA = 25;
 
     async function fetchData() {
         try {
@@ -157,17 +199,26 @@
             renderTable(allData);
         } catch (error) {
             document.getElementById('dataTableBody').innerHTML = `
-                <tr><td colspan="15" style="text-align: center; color: #ef4444; padding: 20px;">Gagal memuat data. Pastikan URL dan fungsi doGet sudah benar.</td></tr>
+                <tr><td colspan="4" style="text-align: center; color: #ef4444; padding: 20px;">Gagal memuat data. Silakan coba beberapa saat lagi.</td></tr>
             `;
         }
     }
 
     function renderTable(data) {
         const tbody = document.getElementById('dataTableBody');
-        document.getElementById('totalData').innerText = `Total Pendaftar: ${data.length} Data`;
+        const totalPendaftar = data.length;
         
-        if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="15" style="text-align: center; color: #6b7280; padding: 20px;">Belum ada data pendaftar inden yang masuk.</td></tr>`;
+        // Update Widget Kuota
+        document.getElementById('totalData').innerText = `Total Pendaftar Masuk: ${totalPendaftar} Anak`;
+        document.getElementById('quotaText').innerText = `Terisi: ${totalPendaftar} / ${MAX_QUOTA} Anak`;
+
+        if (totalPendaftar >= MAX_QUOTA) {
+            document.getElementById('quotaText').style.background = '#ef4444'; // Berubah merah jika kuota penuh
+            document.getElementById('quotaText').innerText = `KUOTA PENUH (${totalPendaftar}/${MAX_QUOTA})`;
+        }
+        
+        if (totalPendaftar === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #6b7280; padding: 30px;">Belum ada pendaftar inden yang masuk.</td></tr>`;
             return;
         }
 
@@ -177,20 +228,11 @@
             html += `
                 <tr>
                     <td>${index + 1}</td>
-                    <td>${formattedDate}</td>
-                    <td style="font-weight: 600; color: #0d9488;">${row.nama || '-'}</td>
-                    <td>${row.gender || '-'}</td>
-                    <td>${row.tempatLahir || ''}, ${row.tanggalLahir || ''}</td>
-                    <td>${row.nikSiswa || '-'}</td>
-                    <td>${row.asalSekolah || '-'}</td>
-                    <td>${row.wa || '-'}</td>
-                    <td>${row.noKk || '-'}</td>
-                    <td>${row.namaAyah || '-'}</td>
-                    <td>${row.nikAyah || '-'}</td>
-                    <td>${row.namaIbu || '-'}</td>
-                    <td>${row.nikIbu || '-'}</td>
-                    <td>${row.namaWali !== '-' ? row.namaWali + ' (' + row.nikWali + ')' : '-'}</td>
-                    <td><span class="badge"><i class="fa-solid fa-check"></i> Terdaftar</span></td>
+                    <td style="color: #64748b; font-size: 13px;">${formattedDate}</td>
+                    <td style="font-weight: 600; color: #0d9488; font-size: 15px;">${row.nama || '-'}</td>
+                    <td style="text-align: center;">
+                        <span class="badge"><i class="fa-solid fa-circle-check"></i> Terdaftar</span>
+                    </td>
                 </tr>
             `;
         });
@@ -201,9 +243,7 @@
         const query = document.getElementById('searchInput').value.toLowerCase();
         const filtered = allData.filter(row => {
             const nama = (row.nama || '').toLowerCase();
-            const ayah = (row.namaAyah || '').toLowerCase();
-            const ibu = (row.namaIbu || '').toLowerCase();
-            return nama.includes(query) || ayah.includes(query) || ibu.includes(query);
+            return nama.includes(query);
         });
         renderTable(filtered);
     }
