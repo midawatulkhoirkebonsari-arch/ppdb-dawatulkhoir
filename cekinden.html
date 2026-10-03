@@ -20,7 +20,7 @@
             padding: 20px;
         }
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             background: #ffffff;
             padding: 25px;
@@ -51,7 +51,7 @@
             padding: 10px 15px;
             border: 1px solid #d1d5db;
             border-radius: 8px;
-            width: 280px;
+            width: 300px;
             font-size: 14px;
         }
         .table-responsive {
@@ -60,11 +60,12 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 14px;
+            font-size: 13px;
             text-align: left;
+            white-space: nowrap;
         }
         th, td {
-            padding: 12px 15px;
+            padding: 12px 14px;
             border-bottom: 1px solid #e5e7eb;
         }
         th {
@@ -78,9 +79,9 @@
         .badge {
             background-color: #d1fae5;
             color: #065f46;
-            padding: 5px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
         }
         .back-btn {
@@ -107,7 +108,7 @@
 
     <div class="info-bar">
         <div id="totalData" style="font-weight: 600; color: #4b5563;">Memuat data...</div>
-        <input type="text" id="searchInput" class="search-box" placeholder="Cari nama siswa / wali..." onkeyup="filterTable()">
+        <input type="text" id="searchInput" class="search-box" placeholder="Cari nama siswa, ayah, atau ibu..." onkeyup="filterTable()">
     </div>
 
     <div class="table-responsive">
@@ -118,14 +119,22 @@
                     <th>WAKTU DAFTAR</th>
                     <th>NAMA SISWA</th>
                     <th>L/P</th>
-                    <th>TEMPAT, TANGGAL LAHIR</th>
-                    <th>WALI</th>
+                    <th>TTL</th>
+                    <th>NIK SISWA</th>
+                    <th>ASAL SEKOLAH</th>
+                    <th>NO WA</th>
+                    <th>NO KK</th>
+                    <th>NAMA AYAH</th>
+                    <th>NIK AYAH</th>
+                    <th>NAMA IBU</th>
+                    <th>NIK IBU</th>
+                    <th>NAMA WALI</th>
                     <th>STATUS</th>
                 </tr>
             </thead>
             <tbody id="dataTableBody">
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 40px; color: #6b7280;">
+                    <td colspan="15" style="text-align: center; padding: 40px; color: #6b7280;">
                         <i class="fa-solid fa-spinner fa-spin"></i> Sedang memuat data dari database...
                     </td>
                 </tr>
@@ -135,8 +144,8 @@
 </div>
 
 <script>
-    // URL Web App Google Apps Script Anda
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwuKlypGoI7-ZGdrPApWDwR8MLwMGtZ54aLjtZgQ4Q9NIYNfjTGLV_7sv9aGjUZWpzS/exec';
+    // URL Web App Google Apps Script Anda (pastikan sama)
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzjMgSqdlcVnm7QpK3BlRosxGWvmW47svs2vYMROQ4E58Ej_PR2nMctBQIznpVZQWY/exec';
 
     let allData = [];
 
@@ -148,7 +157,7 @@
             renderTable(allData);
         } catch (error) {
             document.getElementById('dataTableBody').innerHTML = `
-                <tr><td colspan="7" style="text-align: center; color: #ef4444; padding: 20px;">Gagal memuat data. Pastikan fungsi doGet sudah terpasang di Google Apps Script Anda.</td></tr>
+                <tr><td colspan="15" style="text-align: center; color: #ef4444; padding: 20px;">Gagal memuat data. Pastikan URL dan fungsi doGet sudah benar.</td></tr>
             `;
         }
     }
@@ -158,7 +167,7 @@
         document.getElementById('totalData').innerText = `Total Pendaftar: ${data.length} Data`;
         
         if (data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: #6b7280; padding: 20px;">Belum ada data pendaftar inden yang masuk.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="15" style="text-align: center; color: #6b7280; padding: 20px;">Belum ada data pendaftar inden yang masuk.</td></tr>`;
             return;
         }
 
@@ -172,7 +181,15 @@
                     <td style="font-weight: 600; color: #0d9488;">${row.nama || '-'}</td>
                     <td>${row.gender || '-'}</td>
                     <td>${row.tempatLahir || ''}, ${row.tanggalLahir || ''}</td>
-                    <td>${row.namaWali || '-'}</td>
+                    <td>${row.nikSiswa || '-'}</td>
+                    <td>${row.asalSekolah || '-'}</td>
+                    <td>${row.wa || '-'}</td>
+                    <td>${row.noKk || '-'}</td>
+                    <td>${row.namaAyah || '-'}</td>
+                    <td>${row.nikAyah || '-'}</td>
+                    <td>${row.namaIbu || '-'}</td>
+                    <td>${row.nikIbu || '-'}</td>
+                    <td>${row.namaWali !== '-' ? row.namaWali + ' (' + row.nikWali + ')' : '-'}</td>
                     <td><span class="badge"><i class="fa-solid fa-check"></i> Terdaftar</span></td>
                 </tr>
             `;
@@ -184,8 +201,9 @@
         const query = document.getElementById('searchInput').value.toLowerCase();
         const filtered = allData.filter(row => {
             const nama = (row.nama || '').toLowerCase();
-            const wali = (row.namaWali || '').toLowerCase();
-            return nama.includes(query) || wali.includes(query);
+            const ayah = (row.namaAyah || '').toLowerCase();
+            const ibu = (row.namaIbu || '').toLowerCase();
+            return nama.includes(query) || ayah.includes(query) || ibu.includes(query);
         });
         renderTable(filtered);
     }
