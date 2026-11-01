@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Status Kuota & Pendaftar Inden - MI Da'watul Khoir</title>
+    <title>Pendaftar Siswa Baru - MI Da'watul Khoir</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -142,15 +142,15 @@
     <a href="index.html" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda</a>
 
     <div class="header-banner">
-        <h1>Status & Kuota Calon Siswa Jalur Inden</h1>
+        <h1>Cek Siswa yang sudah masuk</h1>
         <p style="margin: 0; font-size: 14px; opacity: 0.9;">MI Da'watul Khoir TP. 2027/2028</p>
     </div>
 
     <!-- Kotak Informasi Kuota Maksimal 25 Anak -->
     <div class="quota-box">
         <div class="quota-info">
-            <h3>Kapasitas Kuota Jalur Inden</h3>
-            <p>Pendaftaran akan ditutup otomatis jika kuota terpenuhi.</p>
+            <h3>Kapasitas Siswa yang sudah masuk</h3>
+            <p>Pendaftaran akan ditutup otomatis jika terpenuhi.</p>
         </div>
         <div class="quota-badge" id="quotaText">Terisi: 0 / 25 Anak</div>
     </div>
@@ -218,7 +218,7 @@
         }
         
         if (totalPendaftar === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #6b7280; padding: 30px;">Belum ada pendaftar inden yang masuk.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: #6b7280; padding: 30px;">Belum ada pendaftar siswa yang masuk.</td></tr>`;
             return;
         }
 
