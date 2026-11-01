@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pendaftaran Jalur INDEN - MI DA'WATUL KHOIR</title>
+    <title>Pendaftaran Jalur Online - MI DA'WATUL KHOIR</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -163,7 +163,7 @@
 
 <div class="container">
     <h2>MI DA'WATUL KHOIR</h2>
-    <div class="subtitle">Formulir Pendaftaran Jalur INDEN TP 2027/2028</div>
+    <div class="subtitle">Formulir Pendaftaran Jalur Online TP 2027/2028</div>
 
     <!-- FORMULIR -->
     <form id="indenForm">
@@ -263,7 +263,7 @@
         </div>
 
         <div id="captureCard" class="card-bukti">
-            <h3>BUKTI PENDAFTARAN INDEN</h3>
+            <h3>BUKTI PENDAFTARAN ONLINE</h3>
             <div class="card-row"><span class="card-label">Status:</span><span style="color: #0d9488; font-weight: bold;">BERHASIL TERDAFTAR</span></div>
             <div class="card-row"><span class="card-label">Nama Siswa:</span><span id="resNama">-</span></div>
             <div class="card-row"><span class="card-label">Jenis Kelamin:</span><span id="resGender">-</span></div>
@@ -342,7 +342,7 @@
             document.getElementById('resWa').innerText = formData.wa;
 
             document.getElementById('qrcode').innerHTML = "";
-            const statusPageURL = window.location.href.replace('inden.html', 'cekinden.html');
+            const statusPageURL = window.location.href.replace('inden.html', 'ceksiswamasuk.html');
             
             new QRCode(document.getElementById("qrcode"), {
                 text: statusPageURL,
@@ -363,7 +363,7 @@
         const card = document.getElementById('captureCard');
         html2canvas(card, { scale: 2 }).then(canvas => {
             const link = document.createElement('a');
-            link.download = 'Bukti-Inden-PPDB.png';
+            link.download = 'Bukti-Online-PPDB.png';
             link.href = canvas.toDataURL('image/png');
             link.click();
         });
